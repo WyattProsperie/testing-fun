@@ -1,4 +1,5 @@
 import random
+
 deck = []
 i = 0
 
@@ -84,9 +85,34 @@ while i < 52:
     deck.append(thisCardinfo)
     i += 1
     
-print(deck)
+# print(deck)
 print(i)
 print(f"Black: {blackcounter}, Red: {redcounter}")
 print(f"Spades: {spadecounter}, Clubs: {clubcounter}, Hearts: {heartcounter}, Diamonds: {diamondcounter}")
 
 #hibabyyyy
+
+def from_deck(list, int, list2):
+    card = list.pop(int)
+    list2.append(card)
+    return
+
+def flip_card(card):
+    if card[0] == "H":
+        card = card.replace("H", "V")
+    else:
+        card = card.replace("V", "H")
+    return card
+
+def show_cards(list):
+    for card in list:
+        if card[0] == "H":
+            print("XX", end=" ")
+        else:
+            print(card, end=" ")
+    print()
+    
+for card in deck:
+    deck[deck.index(card)] = flip_card(card)
+    
+print(show_cards(deck))
