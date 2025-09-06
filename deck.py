@@ -4,19 +4,23 @@ deck = []
 i = 0
 
 #Hidden, Color, Suit, Rank
-cardinfo = "HCSN"
-blackcounter = 0
-redcounter = 0
+cardinfo    = "HCSN"
+ranks_short = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
+ranks_long = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
+suits_short = ["S", "C", "H", "D"]
+suits_long = ["Spades", "Clubs", "Hearts", "Diamonds"]
 
+blackcounter    = 0
+redcounter      = 0
 spadecounter    = 0
 clubcounter     = 0
 heartcounter    = 0
 diamondcounter  = 0
 
-spaderank      = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
-clubrank       = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
-heartrank      = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
-diamondrank    = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
+spaderank      = ranks_short.copy()
+clubrank       = ranks_short.copy()
+heartrank      = ranks_short.copy()
+diamondrank    = ranks_short.copy()
 
 while i < 52:
     
@@ -84,18 +88,22 @@ while i < 52:
         
     deck.append(thisCardinfo)
     i += 1
-    
-# print(deck)
-print(i)
-print(f"Black: {blackcounter}, Red: {redcounter}")
-print(f"Spades: {spadecounter}, Clubs: {clubcounter}, Hearts: {heartcounter}, Diamonds: {diamondcounter}")
-
-#hibabyyyy
 
 def from_deck(list, int, list2):
     card = list.pop(int)
     list2.append(card)
     return
+
+def to_deck(list, int, list2):
+    card = list2.pop(int)
+    list.append(card)
+    return
+
+def check_suit(card):
+    return card[2]
+
+def check_rank(card):
+    return card[3]
 
 def flip_card(card):
     if card[0] == "H":
@@ -104,15 +112,21 @@ def flip_card(card):
         card = card.replace("V", "H")
     return card
 
+# Need to fix the output
 def show_cards(list):
     for card in list:
         if card[0] == "H":
             print("XX", end=" ")
         else:
-            print(card, end=" ")
+            suit = check_suit(card)
+            rank = check_rank(card)
+            card = f"{ranks_long[ranks_short[card.find(rank)]]} of {suits_long[suits_short[card.find(suit)]]}"
+            print(card, end=" | ")                
     print()
-    
-for card in deck:
-    deck[deck.index(card)] = flip_card(card)
-    
-print(show_cards(deck))
+    return
+
+def shuffle_deck(list):
+    random.shuffle(list)
+    return
+
+print(show_cards([flip_card(card) for card in deck]))
