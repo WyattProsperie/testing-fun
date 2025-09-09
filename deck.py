@@ -119,9 +119,15 @@ def show_cards(list):
             print("XX", end=" ")
         else:
             suit = check_suit(card)
-            rank = check_rank(card)
-            card = f"{ranks_long[ranks_short[card.find(rank)]]} of {suits_long[suits_short[card.find(suit)]]}"
-            print(card, end=" | ")                
+            
+            if suit == "S":
+                print(f"♠{check_rank(card)}", end=" ")
+            elif suit == "C":
+                print(f"♣{check_rank(card)}", end=" ")
+            elif suit == "H":
+                print(f"♥{check_rank(card)}", end=" ")
+            elif suit == "D":
+                print(f"♦{check_rank(card)}", end=" ")           
     print()
     return
 
@@ -129,4 +135,4 @@ def shuffle_deck(list):
     random.shuffle(list)
     return
 
-print(show_cards([flip_card(card) for card in deck]))
+print(show_cards(flip_card(card) for card in deck))
