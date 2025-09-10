@@ -124,6 +124,22 @@ def show_cards(list):
     print()
     return
 
+def reveal_cards(list):
+    
+    for card in list:
+        suit = check_suit(card)
+                
+        if suit == "S":
+            print(f"♠{check_rank(card)}", end=" ")
+        elif suit == "C":
+            print(f"♣{check_rank(card)}", end=" ")
+        elif suit == "H":
+            print(f"♥{check_rank(card)}", end=" ")
+        elif suit == "D":
+            print(f"♦{check_rank(card)}", end=" ")           
+    print()
+    return
+
 def show_card(card):
     if card[0] == "Z":
         return "XX"
