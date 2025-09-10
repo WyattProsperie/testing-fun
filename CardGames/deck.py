@@ -94,22 +94,21 @@ def from_deck(list, int, list2):
     list2.append(card)
     return
 
-def to_deck(list, int, list2):
-    card = list2.pop(int)
-    list.append(card)
+def move_piles(list, int, list2):
+    card = list.pop(int)
+    list2.append(card)
     return
 
 def flip_card(card):
-    if card[0] == "H":
+    if card[0] == "Z":
         card = card.replace("Z", "V")
     else:
         card = card.replace("V", "Z")
     return card
 
-# Need to fix the output
 def show_cards(list):
     for card in list:
-        if card[0] == "H":
+        if card[0] == "Z":
             print("XX", end=" ")
         else:
             suit = check_suit(card)
@@ -123,6 +122,22 @@ def show_cards(list):
             elif suit == "D":
                 print(f"♦{check_rank(card)}", end=" ")           
     print()
+    return
+
+def show_card(card):
+    if card[0] == "Z":
+        return "XX"
+    else:
+        suit = check_suit(card)
+            
+        if suit == "S":
+            return f"♠{check_rank(card)}"
+        elif suit == "C":
+            return f"♣{check_rank(card)}"
+        elif suit == "H":
+            return f"♥{check_rank(card)}"
+        elif suit == "D":
+            return f"♦{check_rank(card)}"           
     return
 
 def shuffle_deck(list):
