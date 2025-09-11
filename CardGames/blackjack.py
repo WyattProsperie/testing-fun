@@ -27,8 +27,16 @@ def calculate_hand_value(hand):
     
     return value
 
+money = float(input("Enter the amount of money you have to play with: $"))
+round_done = False
+
 i = 51
-while i > 0:
+while i > 0 and money > 0:
+    
+    if len(player_hand) == 0 and len(dealer_hand) == 0:
+        print(f"You have ${money}")
+        bet = float(input("Enter your bet amount: $"))
+
     if len(player_hand) < 2:
         move_piles(deck, i, player_hand)
         i -= 1
@@ -73,18 +81,23 @@ while i > 0:
         
         if dealer_value > 21:
             print("Dealer busts! You win!")
+            money += bet
         elif dealer_value == player_value:
             print("It's a tie!")
         elif dealer_value > player_value:
             print("Dealer wins!")
+            money -= bet
         elif player_value > 21:
             print("You lose.")
+            money -= bet
         else:
             print("You win!")
-            
+            money += bet
+                    
         quit = input("Quit or play again? (Q/P): ").upper()
         if quit == "Q":
             print("Thanks for playing!")
+            print(f"You leave with ${money}")
             break
         
         print("--- New Round ---")
@@ -104,4 +117,7 @@ while i > 0:
         
         while len(discard) > 0:
             move_piles(discard, 0, deck)
-            shuffle_deck(deck)
+    
+    shuffle_deck(deck)
+    
+print(f"Game over, you have {money}")
