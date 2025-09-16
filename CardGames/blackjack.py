@@ -9,6 +9,10 @@ split_hand2 = []
 dealer_hand = []
 discard     = []
 
+split_game = False
+split_hand = 1
+double_down = False
+
 def calculate_hand_value(hand):
     value = 0
     aces = 0
@@ -35,12 +39,11 @@ round_done = False
 i = 51
 while i > 0 and money > 0:
     
-    if len(player_hand) == 0 and len(dealer_hand) == 0:
+    if len(player_hand) == 0 and len(dealer_hand) == 0 and split_game == False:
         print(f"You have ${money}")
         bet = float(input("Enter your bet amount: $"))
 
-    if len(player_hand) < 2:
-        split_game = False
+    if len(player_hand) < 2 and split_game == False:
         
         move_piles(deck, i, player_hand)
         i -= 1
@@ -56,7 +59,9 @@ while i > 0 and money > 0:
         print(f"Dealer's hand: {show_card(flip_card(dealer_hand[0]))} XX")
         
         if check_rank(player_hand[0]) == check_rank(player_hand[1]) and money >= bet * 2 and split_game == False:
+            
             split = input("You have a pair! Type 'S' to split or any other key to continue: ").upper()
+            
             if split == "S":
                 
                 split_game = True
@@ -80,15 +85,36 @@ while i > 0 and money > 0:
     elif player_value == 21:
         print("You hit 21! Now it's the dealer's turn.")
         action = "S"
+        
+    if split_game == True:
+        split1_value = calculate_hand_value(split_hand1)
+        split2_value = calculate_hand_value(split_hand2)
+        
+        if split1_value > 21:
+            print("First split hand busts! You lose this hand.")
+            action = "S"
+        elif split1_value == 21:
+            print("First split hand hits 21! Now it's the dealer's turn.")
+            action = "S"
+        
+        if split2_value > 21:
+            print("Second split hand busts! You lose this hand.")
+            action = "S"
+        elif split2_value == 21:
+            print("Second split hand hits 21! Now it's the dealer's turn.")
+            action = "S"
     
-    if player_value < 21 and split_game == False:
-        action = input("Type 'H' to hit, 'S' to stand: ").upper()
-    elif player_value < 21 and split_game == True:
-        split_hand = 1
+    if player_value < 21 and split_game == False and double_down == False:
+        action = input("Type 'H' to hit, 'S' to stand, or 'D' to double down: ").upper()
+    elif split_game == True and double_down == False:
         if split_hand == 1:
-            action = input("First split hand. Type 'H' to hit, 'S' to stand: ").upper()
+            action = input("First split hand. Type 'H' to hit, 'S' to stand, or 'D' to double down: ").upper()
         elif split_hand == 2:
-            action = input("Second split hand. Type 'H' to hit, 'S' to stand: ").upper()
+            action = input("Second split hand. Type 'H' to hit, 'S' to stand, or 'D' to double down: ").upper()
+    elif double_down == True:
+        action = "S"
+        if split_game == True and split_hand == 1:
+            split_hand = 2
         
     if action == "H" and split_game == False:
         move_piles(deck, i, player_hand)
@@ -106,6 +132,50 @@ while i > 0 and money > 0:
             i -= 1
             print(f"Your second split hand: ", end="")
             reveal_cards(split_hand2)
+    elif action == "D" and split_game == False:
+        if money >= bet * 2:
+            double_down = True
+            bet *= 2
+            move_piles(deck, i, player_hand)
+            i -= 1
+            print(f"Your hand: ", end="")
+            reveal_cards(player_hand)
+            player_value = calculate_hand_value(player_hand)
+            if player_value > 21:
+                print("Bust! You lose.")
+        else:
+            print("Insufficient funds to double down.")
+            continue
+    elif action == "D" and split_game == True:
+        if split_hand == 1:
+            if money >= bet * 2:
+                double_down = True
+                bet *= 2
+                move_piles(deck, i, split_hand1)
+                i -= 1
+                print(f"Your first split hand: ", end="")
+                reveal_cards(split_hand1)
+                split1_value = calculate_hand_value(split_hand1)
+                if split1_value > 21:
+                    print("Bust! You lose this hand.")
+                split_hand = 2
+            else:
+                print("Insufficient funds to double down.")
+                action = "H"
+        elif split_hand == 2:
+            if money >= bet * 2:
+                double_down = True
+                bet *= 2
+                move_piles(deck, i, split_hand2)
+                i -= 1
+                print(f"Your second split hand: ", end="")
+                reveal_cards(split_hand2)
+                split2_value = calculate_hand_value(split_hand2)
+                if split2_value > 21:
+                    print("Bust! You lose this hand.")
+            else:
+                print("Insufficient funds to double down.")
+                action = "H"
     elif action == "S" and split_game == True:
         if split_hand == 1:
             split_hand = 2
@@ -122,30 +192,39 @@ while i > 0 and money > 0:
             print(f"Dealer's hand: ", end="")
             reveal_cards(dealer_hand)
             
-            if dealer_value > 21:
+            if dealer_value > 21 and split1_value <= 21 and split2_value <= 21:
                 print("Dealer busts! You win both hands!")
                 money += bet * 2
             else:
-                split1_value = calculate_hand_value(split_hand1)
-                split2_value = calculate_hand_value(split_hand2)
-                
-                if dealer_value == split1_value:
-                    print("First split hand is a tie!")
-                elif dealer_value > split1_value:
+                if split1_value <= 21:
+                    if dealer_value == split1_value:
+                        print("First split hand is a tie!")
+                    elif dealer_value > split1_value:
+                        print("Dealer wins first split hand!")
+                        money -= bet
+                    else:
+                        print("You win first split hand!")
+                        money += bet
+                elif split1_value > 21 and dealer_value > 21:
+                    print("Both dealer and first split hand bust! No money won or lost.")
+                elif split1_value > 21 and dealer_value <= 21:
                     print("Dealer wins first split hand!")
                     money -= bet
-                else:
-                    print("You win first split hand!")
-                    money += bet
                 
-                if dealer_value == split2_value:
-                    print("Second split hand is a tie!")
-                elif dealer_value > split2_value:
+                if split2_value <= 21:
+                    if dealer_value == split2_value:
+                        print("Second split hand is a tie!")
+                    elif dealer_value > split2_value:
+                        print("Dealer wins second split hand!")
+                        money -= bet
+                    else:
+                        print("You win second split hand!")
+                        money += bet
+                elif split2_value > 21 and dealer_value > 21:
+                    print("Both dealer and second split hand bust! No money won or lost.")
+                elif split2_value > 21 and dealer_value <= 21:
                     print("Dealer wins second split hand!")
                     money -= bet
-                else:
-                    print("You win second split hand!")
-                    money += bet
             round_done = True
     elif action == "S" and split_game == False:
         while dealer_value < 17:
@@ -156,7 +235,9 @@ while i > 0 and money > 0:
         print(f"Dealer's hand: ", end="")
         reveal_cards(dealer_hand)
         
-        if dealer_value > 21:
+        if dealer_value > 21 and player_value > 21:
+            print("Both dealer and player bust! No money won or lost.")
+        elif dealer_value > 21:
             print("Dealer busts! You win!")
             money += bet
         elif dealer_value == player_value:
@@ -175,8 +256,11 @@ while i > 0 and money > 0:
         print("Invalid input, please try again.")
         continue
     if round_done:
-        round_done = False
-        split_game = False
+        
+        round_done  = False
+        split_game  = False
+        double_down = False
+        
         quit = input("Quit or play again? (Q/P): ").upper()
         if quit == "Q":
             print("Thanks for playing!")
