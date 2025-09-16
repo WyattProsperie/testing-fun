@@ -114,6 +114,7 @@ while i > 0 and money > 0:
     elif double_down == True:
         action = "S"
         if split_game == True and split_hand == 1:
+            double_down = False
             split_hand = 2
         
     if action == "H" and split_game == False:
@@ -287,6 +288,7 @@ while i > 0 and money > 0:
         while len(discard) > 0:
             move_piles(discard, 0, deck)
     
-    shuffle_deck(deck)
+        shuffle_deck(deck)
+        i = 51
     
 print(f"Game over, you have {money}")
