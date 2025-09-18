@@ -183,7 +183,6 @@ while i > 0 and money > 0:
             print("Now playing second split hand.")
             print(f"Your second split hand: ", end="")
             reveal_cards(split_hand2)
-            continue
         elif split_hand == 2:
             while dealer_value < 17:
                 move_piles(deck, i, dealer_hand)
