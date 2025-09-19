@@ -115,7 +115,6 @@ while i > 0 and money > 0:
         action = "S"
         if split_game == True and split_hand == 1:
             double_down = False
-            split_hand = 2
         
     if action == "H" and split_game == False:
         move_piles(deck, i, player_hand)
@@ -159,7 +158,6 @@ while i > 0 and money > 0:
                 split1_value = calculate_hand_value(split_hand1)
                 if split1_value > 21:
                     print("Bust! You lose this hand.")
-                split_hand = 2
             else:
                 print("Insufficient funds to double down.")
                 action = "H"
