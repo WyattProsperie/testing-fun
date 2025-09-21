@@ -1,5 +1,33 @@
 # HEY NO PEEKING
-
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 name = input("Are you Bridget or Wyatt? ").strip().lower()
 
 if name == "wyatt":
@@ -27,4 +55,5 @@ else:
 
 print("Wait does this count as typing a paragraph?")
 print("Anyways I love youuuuuu, and enjoy testing out all the different possibilities of this code!")
+
 print("Ily 477710 <3")
